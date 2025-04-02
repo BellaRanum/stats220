@@ -1,0 +1,84 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+p {
+  font-weight: bold;
+}
+{background-color: ##98FF98}
+```
+
+## This data is tracking the content students are recommended on their TikTok For You Page (FYP) to get an insight into what their interests are and how accurate they find it to be of their interests.
+
+
+```{r}
+library("readr")
+library("tidyverse")
+
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSbmJwPnUT0jBRw8-ad_CD1WahMCxP0Bmos7y-w2CH_2czQhkekLIjPj8U8Q-NZk7I1flE9XGWMVmu9/pub?output=csv")%>%
+  rename(number_of_responses = 1,
+    age = 2,
+       hours_scrolling = 3,
+       videos_that_appear = 4,
+       videos_interacted_with = 5,
+       how_tailored = 6,
+       usage_duration = 7)
+
+latest_data <- logged_data
+number_of_responses <- latest_data$hours_scrolling %>%
+  length()
+mean_hours_scrolling <- latest_data$hours_scrolling %>%
+  mean() %>%
+  round(1)
+
+paste0("The mean hours spent scrolling on TikTok's FYP reported by the ", number_of_responses, " students who completed the survey was ", mean_hours_scrolling, ".")
+
+
+latest_data <- latest_data %>%
+  mutate(how_tailored = as.factor(how_tailored))
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = hours_scrolling,
+               fill = how_tailored)) +
+  labs(title = "Hours scrolling compared to FYP accuracy of your interests",
+       x = "Number of students",
+       y = "Daily hours spent scrolling",
+       fill = "How accurate do you believe your FYP is of your interests",
+       caption = "Source: STATS 220 TikTok FYP survey")+
+  theme_minimal()
+
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = usage_duration,
+               fill = how_tailored)) +
+  labs(title = "TikTok usage duration compared to FYP accuracy of your interests",
+       x = "Number of students",
+       y = "How long they've used TikTok",
+       fill = "How accurate do you believe your FYP is of your interests",
+       caption = "Source: STATS 220 TikTok FYP survey")+
+  theme_minimal()
+
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = age,
+               fill = videos_interacted_with)) +
+  labs(title = "Student age compared to the kind of videos they interact with",
+       x = "Number of students",
+       y = "Age group",
+       fill = "Types of videos interacted with",
+       caption = "Source: STATS 220 STATS 220 TikTok FYP survey")+
+  theme_minimal()
+```
+
+I am analyzing the content university students are recommended on their TikTok 'For you pages' (FYPs) to get an insight into both their interests and how accurate they believe their FYPs are of their interests.  I have collected the ages of people surveyed to understand the source of the data.  I have also collected the amount of hours they spend scrolling their FYP each day, the types of videos that have appeared most regularly on their FYPs this month and the types of videos appearing on their FYP that they have interacted with during the month.  I wanted to see if there is a relationship between these variables and how accurate they believe their TikTok FYP is.
+
