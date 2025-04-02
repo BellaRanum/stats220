@@ -1,0 +1,81 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+
+```
+
+## This data is tracking the content students are recommended on their Tiktok For You Page (FYP) and how they interact with it
+
+You need to change the contents of this Rmd! Replace the R code and markdown give below in this template document.
+
+```{r}
+library("readr")
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSbmJwPnUT0jBRw8-ad_CD1WahMCxP0Bmos7y-w2CH_2czQhkekLIjPj8U8Q-NZk7I1flE9XGWMVmu9/pub?output=csv")%>%
+  rename(number_of_responses = 1,
+    age = 2,
+       hours_scrolling = 3,
+       videos_that_appear = 4,
+       videos_interacted_with = 5,
+       how_tailored = 6,
+       usage_duration = 7)
+
+latest_data <- logged_data
+glimpse(latest_data)
+
+number_of_responses <- latest_data$hours_scrolling %>%
+  length()
+
+mean_hours_scrolling <- latest_data$hours_scrolling %>%
+  mean() %>%
+  round(1)
+
+paste0("The mean hours spent scrolling on TikTok's FYP reported by the ", number_of_responses, " students who completed the survey was ", mean_hours_scrolling, ".")
+
+
+latest_data <- latest_data %>%
+  mutate(how_tailored = as.factor(how_tailored))
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = hours_scrolling,
+               fill = how_tailored)) +
+  labs(title = "Hours scrolling the TikTok FYP compared to how tailored each student believes their FYP is",
+       x = "Number of students",
+       y = "Rating",
+       caption = "Source: STATS 220 survey S125")+
+  theme_minimal()
+
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = usage_duration,
+               fill = how_tailored)) +
+  labs(title = "How long a student has used Tiktok compared to how tailored each student believes their FYP is",
+       x = "Number of students",
+       y = "Rating",
+       caption = "Source: STATS 220 survey S125")+
+  theme_minimal()
+
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = age,
+               fill = videos_interacted_with)) +
+  labs(title = "How old is a student compared to what kind of videos they interact with on their FYP",
+       x = "Number of students",
+       y = "Age group",
+       caption = "Source: STATS 220 survey S125")+
+  theme_minimal()
+```
+
+The best pet to have is a `r best_pet` of course!
+
+![](https://c.tenor.com/-qBsG1HwR4oAAAAC/tenor.gif)
